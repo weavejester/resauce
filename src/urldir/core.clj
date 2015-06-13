@@ -35,3 +35,9 @@
            (map (memfn getName))
            (filter-dir-paths path)
            (map (partial build-url url path))))))
+
+(defn resources
+  "Returns *all* the URLs for a named resource. Uses the context class loader
+  if no loader is specified."
+  ([n] (resources n (.getContextClassLoader (Thread/currentThread))))
+  ([n ^ClassLoader loader] (enumeration-seq (.getResources loader n))))
