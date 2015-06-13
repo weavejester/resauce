@@ -1,6 +1,13 @@
-(ns urldir.core)
+(ns urldir.core
+  (:require [clojure.java.io :as io])
+  (:import [java.net URI]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defmulti dir
+  "Return a list of resources under this URL, if possible."
+  (fn [url] (.getScheme (URI. (str url)))))
+
+(defmethod dir "file" [url]
+  (if-let [path (.getPath (URI. (str url)))]
+    (let [file (io/file path)]
+      (if (.isDirectory file)
+        (map io/as-url (.listFiles file))))))
