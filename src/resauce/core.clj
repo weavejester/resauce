@@ -13,7 +13,8 @@
 
 (defn- build-url [base-url dir path]
   (if (.startsWith ^String path dir)
-    (str (add-ending-slash (str base-url)) (subs path (count dir)))))
+    (str (add-ending-slash (str base-url))
+         (subs path (count (add-ending-slash dir))))))
 
 (defn- url-scheme [url]
   (.getScheme (URI. (str url))))
