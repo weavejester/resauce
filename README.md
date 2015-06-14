@@ -1,6 +1,9 @@
 # Resauce
 
-A Clojure library that adds a little extra sauce to JVM resources.
+A library of Clojure functions for working with JVM resources.
+
+Included in the library is `resource-dir` multimethod, which can get a
+directory listing from a file or jar resource.
 
 ## Installation
 
