@@ -11,7 +11,7 @@ directory listing from a file or jar resource.
 
 To install, add the following to your project `:dependencies`:
 
-    [resauce "0.1.0-SNAPSHOT"]
+    [resauce "0.1.0"]
 
 ## Documentation
 

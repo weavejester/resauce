@@ -1,4 +1,4 @@
-(defproject resauce "0.1.0-SNAPSHOT"
+(defproject resauce "0.1.0"
   :description "Useful functions for handling JVM resources"
   :url "https://github.com/weavejester/resauce"
   :license {:name "Eclipse Public License"
