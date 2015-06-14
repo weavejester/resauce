@@ -51,7 +51,7 @@
         jar  (.getJarFile ^JarURLConnection conn)
         path (.getEntryName ^JarURLConnection conn)]
     (->> (.entries jar)
-         (iterator-seq)
+         (enumeration-seq)
          (map (memfn getName))
          (filter-dir-paths path)
          (map (partial build-url url path)))))
