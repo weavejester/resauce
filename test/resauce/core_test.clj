@@ -26,3 +26,9 @@
       (is (re-matches #"jar:.*medley/core\.clj" (first rs)))
       (is (re-matches #"jar:.*medley/core\.cljs" (second rs)))
       (is (re-matches #"jar:.*medley/core\.cljx" (nth rs 2))))))
+
+(deftest test-resource-dir
+  (let [rs (sort (map str (resource-dir "resauce")))]
+    (is (= (count rs) 2))
+    (is (re-find #"src/resauce/core\.clj$" (first rs)))
+    (is (re-find #"test/resauce/core_test\.clj$" (second rs)))))
