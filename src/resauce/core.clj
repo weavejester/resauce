@@ -56,14 +56,17 @@
          (filter-dir-paths path)
          (map (partial build-url url path)))))
 
+(defn- default-loader []
+  (.getContextClassLoader (Thread/currentThread)))
+
 (defn resources
   "Returns *all* the URLs for a named resource. Uses the context class loader
   if no loader is specified."
-  ([n] (resources n (.getContextClassLoader (Thread/currentThread))))
+  ([n] (resources n (default-loader)))
   ([n ^ClassLoader loader] (enumeration-seq (.getResources loader n))))
 
 (defn resource-dir
   "Return a list of resource URLs on the classpath that have the supplied
   path prefix."
-  [path]
-  (mapcat url-dir (resources path)))
+  ([path] (resource-dir path (default-loader)))
+  ([path loader] (mapcat url-dir (resources path loader))))
