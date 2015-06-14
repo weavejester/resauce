@@ -1,6 +1,7 @@
 (ns resauce.core
   (:require [clojure.java.io :as io])
-  (:import [java.net JarURLConnection URI URL]
+  (:import [java.io File]
+           [java.net JarURLConnection URI URL]
            [java.util.regex Pattern]))
 
 (defn- add-ending-slash [^String s]
@@ -14,27 +15,43 @@
   (if (.startsWith ^String path dir)
     (str (add-ending-slash (str base-url)) (subs path (count dir)))))
 
-(defmulti url-dir
-  "Return a list of URLs contained by this URL, if the protocol supports it."
-  (fn [url] (.getScheme (URI. (str url)))))
+(defn- url-scheme [url]
+  (.getScheme (URI. (str url))))
 
-(defmethod url-dir "file" [url]
-  (if-let [path (.getPath (URI. (str url)))]
-    (let [file (io/file path)]
-      (if (.isDirectory file)
-        (map io/as-url (.listFiles file))))))
+(defn- url-file [url]
+  (File. (.getPath (URI. (str url)))))
 
-(defmethod url-dir "jar" [url]
+(defmulti directory?
+  "Return true if a URL points to a directory resource."
+  url-scheme)
+
+(defmethod directory? "file" [url]
+  (let [file (url-file url)]
+    (and (.exists file) (.isDirectory file))))
+
+(defmethod directory? "jar" [url]
   (let [conn  (.openConnection (URL. (str url)))
         jar   (.getJarFile ^JarURLConnection conn)
-        path  (add-ending-slash (.getEntryName ^JarURLConnection conn))
-        entry (.getEntry jar path)]
-    (if (and entry (.isDirectory entry))
-      (->> (.entries jar)
-           (iterator-seq)
-           (map (memfn getName))
-           (filter-dir-paths path)
-           (map (partial build-url url path))))))
+        path  (.getEntryName ^JarURLConnection conn)
+        entry (.getEntry jar (add-ending-slash path))]
+    (and entry (.isDirectory entry))))
+
+(defmulti url-dir
+  "Return a list of URLs contained by this URL, if the protocol supports it."
+  url-scheme)
+
+(defmethod url-dir "file" [url]
+  (map io/as-url (.listFiles (url-file url))))
+
+(defmethod url-dir "jar" [url]
+  (let [conn (.openConnection (URL. (str url)))
+        jar  (.getJarFile ^JarURLConnection conn)
+        path (.getEntryName ^JarURLConnection conn)]
+    (->> (.entries jar)
+         (iterator-seq)
+         (map (memfn getName))
+         (filter-dir-paths path)
+         (map (partial build-url url path)))))
 
 (defn resources
   "Returns *all* the URLs for a named resource. Uses the context class loader
