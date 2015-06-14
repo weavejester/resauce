@@ -1,4 +1,4 @@
-(ns urldir.core
+(ns resauce.core
   (:require [clojure.java.io :as io])
   (:import [java.net JarURLConnection URI URL]
            [java.util.regex Pattern]))

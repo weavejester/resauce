@@ -1,6 +1,6 @@
-(ns urldir.core-test
+(ns resauce.core-test
   (:require [clojure.test :refer :all]
-            [urldir.core :refer :all]))
+            [resauce.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."
