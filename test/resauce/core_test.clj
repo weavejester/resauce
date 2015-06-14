@@ -8,3 +8,8 @@
   (is (directory? (io/resource "clojure")))
   (is (not (directory? (io/resource "resauce/core.clj"))))
   (is (not (directory? (io/resource "clojure/core.clj")))))
+
+(deftest test-resources
+  (let [rs (sort (map str (resources "resauce")))]
+    (is (re-find #"src/resauce$" (first rs)))
+    (is (re-find #"test/resauce$" (second rs)))))
