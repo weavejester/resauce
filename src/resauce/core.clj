@@ -14,17 +14,17 @@
   (if (.startsWith ^String path dir)
     (str (add-ending-slash (str base-url)) (subs path (count dir)))))
 
-(defmulti dir
-  "Return a list of resources under this URL, if possible."
+(defmulti url-dir
+  "Return a list of URLs contained by this URL, if the protocol supports it."
   (fn [url] (.getScheme (URI. (str url)))))
 
-(defmethod dir "file" [url]
+(defmethod url-dir "file" [url]
   (if-let [path (.getPath (URI. (str url)))]
     (let [file (io/file path)]
       (if (.isDirectory file)
         (map io/as-url (.listFiles file))))))
 
-(defmethod dir "jar" [url]
+(defmethod url-dir "jar" [url]
   (let [conn  (.openConnection (URL. (str url)))
         jar   (.getJarFile ^JarURLConnection conn)
         path  (add-ending-slash (.getEntryName ^JarURLConnection conn))
