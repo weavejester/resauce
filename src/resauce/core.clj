@@ -24,6 +24,7 @@
 
 (defmulti directory?
   "Return true if a URL points to a directory resource."
+  {:arglists '([url])}
   url-scheme)
 
 (defmethod directory? "file" [url]
@@ -39,6 +40,7 @@
 
 (defmulti url-dir
   "Return a list of URLs contained by this URL, if the protocol supports it."
+  {:arglists '([url])}
   url-scheme)
 
 (defmethod url-dir "file" [url]
