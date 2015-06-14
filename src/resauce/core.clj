@@ -41,3 +41,9 @@
   if no loader is specified."
   ([n] (resources n (.getContextClassLoader (Thread/currentThread))))
   ([n ^ClassLoader loader] (enumeration-seq (.getResources loader n))))
+
+(defn resource-dir
+  "Return a list of resource URLs on the classpath that have the supplied
+  path prefix."
+  [path]
+  (mapcat url-dir (resources path)))
