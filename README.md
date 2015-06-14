@@ -1,5 +1,7 @@
 # Resauce
 
+[![Build Status](https://travis-ci.org/weavejester/resauce.svg?branch=master)](https://travis-ci.org/weavejester/resauce)
+
 A library of Clojure functions for working with JVM resources.
 
 Included in the library is `resource-dir` multimethod, which can get a
