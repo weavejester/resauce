@@ -38,6 +38,9 @@
         entry (.getEntry jar (add-ending-slash path))]
     (and entry (.isDirectory entry))))
 
+(defmethod directory? :default [url]
+  false)
+
 (defmulti url-dir
   "Return a list of URLs contained by this URL, if the protocol supports it."
   {:arglists '([url])}
@@ -55,6 +58,9 @@
          (map (memfn getName))
          (filter-dir-paths path)
          (map (partial build-url url path)))))
+
+(defmethod url-dir nil [url]
+  nil)
 
 (defn- default-loader []
   (.getContextClassLoader (Thread/currentThread)))
