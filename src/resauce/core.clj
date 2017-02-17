@@ -38,6 +38,9 @@
         entry (.getEntry jar (add-ending-slash path))]
     (and entry (.isDirectory entry))))
 
+(defmethod directory? :default [url]
+  false)
+
 (defmulti url-dir
   "Return a list of URLs contained by this URL, if the protocol supports it."
   {:arglists '([url])}
