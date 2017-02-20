@@ -7,7 +7,8 @@
   (is (directory? (io/resource "resauce")))
   (is (directory? (io/resource "clojure")))
   (is (not (directory? (io/resource "resauce/core.clj"))))
-  (is (not (directory? (io/resource "clojure/core.clj")))))
+  (is (not (directory? (io/resource "clojure/core.clj"))))
+  (is (not (directory? nil))))
 
 (deftest test-resources
   (let [rs (sort (map str (resources "resauce")))]
