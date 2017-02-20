@@ -59,6 +59,9 @@
          (filter-dir-paths path)
          (map (partial build-url url path)))))
 
+(defmethod url-dir nil [url]
+  nil)
+
 (defn- default-loader []
   (.getContextClassLoader (Thread/currentThread)))
 

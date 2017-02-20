@@ -17,6 +17,8 @@
     (is (re-find #"test/resauce$" (second rs)))))
 
 (deftest test-url-dir
+  (is (nil? (url-dir nil)))
+  (is (thrown? java.lang.IllegalArgumentException (url-dir (io/as-url "http://www.example.com/docs/resource1.html"))))
   (testing "file URL"
     (let [rs (url-dir (io/as-url (io/file "src/resauce")))]
       (is (= (count rs) 1))
