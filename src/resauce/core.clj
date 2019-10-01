@@ -2,6 +2,7 @@
   (:require [clojure.java.io :as io])
   (:import [java.io File]
            [java.net JarURLConnection URI URL]
+           [org.jboss.vfs VFS]
            [java.util.regex Pattern]))
 
 (defn- add-ending-slash [^String s]
@@ -38,6 +39,11 @@
         entry (.getEntry jar (add-ending-slash path))]
     (and entry (.isDirectory entry))))
 
+(defmethod directory? "vfs" [url]
+  (-> url
+      (VFS/getChild)
+      (.isDirectory)))
+
 (defmethod directory? :default [url]
   false)
 
@@ -58,6 +64,12 @@
          (map (memfn getName))
          (filter-dir-paths path)
          (map (partial build-url url path)))))
+
+(defmethod url-dir "vfs" [url]
+  (map #(.toURL %) (.. url
+                       (openConnection)
+                       (getContent)
+                       (getChildren))))
 
 (defn- default-loader []
   (.getContextClassLoader (Thread/currentThread)))
