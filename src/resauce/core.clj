@@ -12,15 +12,16 @@
     (filter (partial re-matches re) paths)))
 
 (defn- build-url [base-url dir path]
-  (if (.startsWith ^String path dir)
-    (str (add-ending-slash (str base-url))
-         (subs path (count (add-ending-slash dir))))))
+  {:pre [(.startsWith ^String path dir)]}
+  (URL. (str (add-ending-slash (str base-url))
+             (subs path (count (add-ending-slash dir))))))
 
 (defn- url-scheme [url]
+  ;; Using URI instead of URL to support arguments without schema.
   (.getScheme (URI. (str url))))
 
 (defn- url-file [url]
-  (File. (.getPath (URI. (str url)))))
+  (File. (.getPath (io/as-url url))))
 
 (defmulti directory?
   "Return true if a URL points to a directory resource."
@@ -32,7 +33,7 @@
     (and (.exists file) (.isDirectory file))))
 
 (defmethod directory? "jar" [url]
-  (let [conn  (.openConnection (URL. (str url)))
+  (let [conn  (.openConnection (io/as-url url))
         jar   (.getJarFile ^JarURLConnection conn)
         path  (.getEntryName ^JarURLConnection conn)
         entry (.getEntry jar (add-ending-slash path))]
@@ -50,7 +51,7 @@
   (map io/as-url (.listFiles (url-file url))))
 
 (defmethod url-dir "jar" [url]
-  (let [conn (.openConnection (URL. (str url)))
+  (let [conn (.openConnection (io/as-url url))
         jar  (.getJarFile ^JarURLConnection conn)
         path (.getEntryName ^JarURLConnection conn)]
     (->> (.entries jar)
