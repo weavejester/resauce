@@ -2,6 +2,7 @@
   (:require [clojure.java.io :as io])
   (:import [java.io File]
            [java.net JarURLConnection URI URL]
+           [java.util.jar JarEntry]
            [java.util.regex Pattern]))
 
 (defn- add-ending-slash [^String s]
@@ -20,8 +21,8 @@
   ;; Using URI instead of URL to support arguments without schema.
   (.getScheme (URI. (str url))))
 
-(defn- url-file [url]
-  (File. (.getPath (io/as-url url))))
+(defn- ^File url-file [url]
+  (File. ^String (.getPath (io/as-url url))))
 
 (defmulti directory?
   "Return true if a URL points to a directory resource."
@@ -56,7 +57,7 @@
         path (.getEntryName ^JarURLConnection conn)]
     (->> (.entries jar)
          (enumeration-seq)
-         (map (memfn getName))
+         (map (memfn ^JarEntry getName))
          (filter-dir-paths path)
          (map (partial build-url url path)))))
 
