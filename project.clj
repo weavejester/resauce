@@ -6,4 +6,7 @@
   :dependencies [[org.clojure/clojure "1.5.1"]]
   :plugins [[lein-codox "0.10.7"]]
   :codox {:output-path "codox"}
-  :profiles {:test {:dependencies [[medley "0.6.0"]]}})
+  :profiles {:test { :source-paths ["src-test"]
+                    :dependencies [[medley "0.6.0"]
+                                   [hiccup "1.0.5"]
+                                   ]}})

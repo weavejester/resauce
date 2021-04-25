@@ -1,7 +1,9 @@
 (ns resauce.core-test
   (:require [clojure.test :refer :all]
             [clojure.java.io :as io]
-            [resauce.core :refer :all]))
+            [clojure.string]
+            [resauce.core :refer :all]
+            ))
 
 (deftest test-directory?
   (is (directory? (io/resource "resauce")))
@@ -33,3 +35,29 @@
     (is (= (count rs) 2))
     (is (re-find #"src/resauce/core\.clj$" (first rs)))
     (is (re-find #"test/resauce/core_test\.clj$" (second rs)))))
+
+(deftest test-resource-name
+  (let [names-in-file (sort (resource-dir-names "resauce"))
+        names-in-jar (sort (resource-dir-names "medley"))
+        names-in-tree (sort (resource-dir-names-tree "hiccup"))]
+    ; resauce - file
+    (is (= (first names-in-file) "core.clj"))
+    (is (= (second names-in-file) "core_test.clj"))
+    ; medley - jar
+    (is (= names-in-jar
+           ["core.clj" 
+            "core.cljs"
+            "core.cljx"]))
+    ; medley - directory tree
+    (is (= names-in-tree
+           ["hiccup/compiler.clj" 
+            "hiccup/core.clj"
+            "hiccup/def.clj" 
+            "hiccup/element.clj" 
+            "hiccup/form.clj" 
+            "hiccup/gamma.clj" ; file (src-test/hiccup)
+            "hiccup/middleware.clj" 
+            "hiccup/page.clj" 
+            "hiccup/util.clj" 
+            "hiccup/zeta/core.clj" ; file (src-test/hiccup)
+            ]))))
